@@ -68,37 +68,29 @@ BASE_CHANNELS = [
     {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"}
 ]
 
-# ২. সরাসরি টুফি সিডিএন থেকে ফ্রেশ কুকি সংগ্রহের মেথড
-def fetch_direct_toffee_cookie():
-    headers = {
-        "User-Agent": "okhttp/4.11.0",
-        "Referer": "https://toffeelive.com/",
-        "Origin": "https://toffeelive.com",
-        "X-Requested-With": "com.toffee.android"
-    }
-    test_urls = [
-        "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8",
+# ২. ডাইনামিক ফিল্টারিং ও কুকি প্রসেসিং মেথড
+def fetch_toffee_cookie():
+    print("🍪 Fetching active Toffee Edge-Cache-Cookie...")
+    COOKIE_SOURCES = [
         "https://toffee-stream-keeper.lovable.app/toffee_ns.json"
     ]
-    for url in test_urls:
+    for src in COOKIE_SOURCES:
         try:
-            res = requests.get(url, headers=headers, timeout=12)
-            cookie_header = res.headers.get("Set-Cookie", "")
-            if "Edge-Cache-Cookie" in cookie_header:
-                for part in cookie_header.split(";"):
-                    if "Edge-Cache-Cookie=" in part:
-                        return part.strip()
-            if res.status_code == 200 and "toffee_ns.json" in url:
+            res = requests.get(src, timeout=15)
+            if res.status_code == 200:
                 data = res.json()
-                if isinstance(data, list) and len(data) > 0:
-                    return data[0].get("cookie", "")
-        except Exception:
-            pass
+                if isinstance(data, list):
+                    for item in data:
+                        if isinstance(item, dict) and item.get("cookie") and "Edge-Cache-Cookie" in item.get("cookie"):
+                            print("✅ Active Toffee Cookie acquired successfully!")
+                            return item.get("cookie")
+        except Exception as e:
+            print(f"Warning fetching cookie from {src}: {e}")
     return ""
 
 def build_independent_toffee_playlist():
     print("🚀 Generating 100% Self-Hosted Independent Toffee Catalog...")
-    current_cookie = fetch_direct_toffee_cookie()
+    current_cookie = fetch_toffee_cookie()
     
     output_data = {
         "name": "Shamim Live TV - Self Hosted Toffee Playlist",
