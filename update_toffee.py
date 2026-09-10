@@ -3,11 +3,8 @@ import os
 import requests
 from datetime import datetime
 
-# ট্রফি অটো-আপডেটেড প্লেলিস্ট জেনারেটর
 def generate_toffee_playlist():
     print("🔄 Fetching latest Toffee channels & cookies...")
-    
-    # এপিআই সোর্স লিঙ্ক (প্রয়োজনে আপনার ব্যাকএন্ড এপিআই ইউআরএল দেওয়া যায়)
     SOURCE_URL = "https://raw.githubusercontent.com/BINOD-XD/Toffee-Auto-Update-Playlist/main/toffee_channel_data.json"
     
     try:
@@ -15,7 +12,6 @@ def generate_toffee_playlist():
         if response.status_code == 200:
             data = response.json()
             
-            # আপনার নিজস্ব ব্র্যান্ডিং যুক্ত করুন
             output_data = {
                 "name": "Shamim Live TV - Toffee Auto Updated Playlist",
                 "owner": "Shamim Pipon",
@@ -24,12 +20,10 @@ def generate_toffee_playlist():
                 "channels": data.get("channels", [])
             }
             
-            # ১. JSON ফাইল সেভ করা
             with open("toffee_channel_data.json", "w", encoding="utf-8") as f:
                 json.dump(output_data, f, indent=2, ensure_ascii=False)
             print("✅ 'toffee_channel_data.json' successfully generated!")
 
-            # ২. M3U প্লেলিস্ট ফাইল সেভ করা (NS Player & Live Tv App এর জন্য)
             m3u_content = "#EXTM3U\n"
             for ch in data.get("channels", []):
                 name = ch.get("name", "Unknown")
