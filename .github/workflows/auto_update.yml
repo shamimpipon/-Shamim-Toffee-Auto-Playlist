@@ -1,0 +1,37 @@
+name: Auto Update Toffee Streams
+
+on:
+  schedule:
+    - cron: '0 * * * *' # প্রতি ১ ঘণ্টা পর পর স্বয়ংক্রিয়ভাবে রান হবে
+  workflow_dispatch: # ম্যানুয়ালি রান করার বাটন
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          pip install requests
+
+      - name: Run Scraper Script
+        run: |
+          python update_toffee.py
+
+      - name: Commit and Push Updated Files
+        run: |
+          git config user.name "ShamimToffeeBot"
+          git config user.email "bot@shamim.com"
+          git add toffee_channel_data.json toffee_playlist.m3u
+          git diff --cached --quiet || (git commit -m "🔁 Auto update Toffee playlist" && git push)
