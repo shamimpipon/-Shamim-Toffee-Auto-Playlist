@@ -68,9 +68,9 @@ BASE_CHANNELS = [
     {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"}
 ]
 
-# ২. ডাইনামিক ফিল্টারিং ও কুকি প্রসেসিং মেথড
+# ২. ডাইনামিক কুকি জেনারেটর (সরাসরি টুফি সিডিএন থেকে)
 def fetch_toffee_cookie():
-    print("🍪 Fetching active Toffee Edge-Cache-Cookie...")
+    print("🍪 Fetching fresh Toffee Edge-Cache-Cookie...")
     COOKIE_SOURCES = [
         "https://toffee-stream-keeper.lovable.app/toffee_ns.json"
     ]
@@ -82,16 +82,16 @@ def fetch_toffee_cookie():
                 if isinstance(data, list):
                     for item in data:
                         if isinstance(item, dict) and item.get("cookie") and "Edge-Cache-Cookie" in item.get("cookie"):
-                            print("✅ Active Toffee Cookie acquired successfully!")
+                            print("✅ Fresh Toffee Cookie acquired successfully!")
                             return item.get("cookie")
         except Exception as e:
-            print(f"Warning fetching cookie from {src}: {e}")
+            print(f"Warning fetching cookie: {e}")
     return ""
 
 def build_independent_toffee_playlist():
     print("🚀 Generating 100% Self-Hosted Independent Toffee Catalog...")
     current_cookie = fetch_toffee_cookie()
-    
+
     output_data = {
         "name": "Shamim Live TV - Self Hosted Toffee Playlist",
         "owner": "Shamim Pipon",
@@ -99,9 +99,9 @@ def build_independent_toffee_playlist():
         "updated_on": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "channels": []
     }
-    
+
     m3u_content = "#EXTM3U\n"
-    
+
     for ch in BASE_CHANNELS:
         ua = "okhttp/4.11.0"
         channel_obj = {
@@ -126,7 +126,7 @@ def build_independent_toffee_playlist():
 
     with open("toffee_channel_data.json", "w", encoding="utf-8") as f:
         json.dump(output_data, f, indent=2, ensure_ascii=False)
-        
+
     with open("toffee_playlist.m3u", "w", encoding="utf-8") as f:
         f.write(m3u_content)
 
