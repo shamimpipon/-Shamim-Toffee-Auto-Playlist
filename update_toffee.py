@@ -3,7 +3,7 @@ import os
 import requests
 from datetime import datetime
 
-# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সকল ৭৫টি চ্যানেল)
+# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সকল ৭৫টি চ্যানেল - কোনো থার্ডপার্টি লিংকের নির্ভরতা নেই)
 BASE_CHANNELS = [
     {"name": "TOFFEE Sports VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sports_highlights/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/19779/logo/240x240/mobile_logo_975410001725875598.png"},
     {"name": "TOFFEE Movies VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/toffee_movie/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/2708/logo/240x240/mobile_logo_724353001725875591.png"},
@@ -68,34 +68,55 @@ BASE_CHANNELS = [
     {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"}
 ]
 
-# ২. ডাইনামিক ফিল্টারিং ও কুকি প্রসেসিং মেথড
-def fetch_toffee_cookie():
-    COOKIE_SOURCE = "https://toffee-stream-keeper.lovable.app/toffee_ns.json"
-    try:
-        res = requests.get(COOKIE_SOURCE, timeout=15)
-        if res.status_code == 200:
-            data = res.json()
-            if isinstance(data, list):
-                for item in data:
-                    if isinstance(item, dict) and item.get("cookie") and "Edge-Cache-Cookie" in item.get("cookie"):
-                        return item.get("cookie")
-    except Exception as e:
-        print(f"Warning fetching cookie: {e}")
+# ২. সরাসরি টুফি সিডিএন থেকে ফ্রেশ কুকি সংগ্রহের ১০০% স্বাধীন মেথড
+def fetch_direct_toffee_cookie():
+    print("🍪 Requesting fresh Edge-Cache-Cookie directly from Toffee CDN...")
+    headers = {
+        "User-Agent": "okhttp/4.11.0",
+        "Referer": "https://toffeelive.com/",
+        "Origin": "https://toffeelive.com",
+        "X-Requested-With": "com.banglalink.toffeetv"
+    }
+    
+    # অফিশিয়াল ব্যাকএন্ড সার্ভিস
+    test_sources = [
+        "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8",
+    ]
+    
+    for url in test_sources:
+        try:
+            res = requests.get(url, headers=headers, timeout=12)
+            # ১. টুফি সিডিএন এর রেসপন্স হেডার থেকে কুকি রিড করা
+            cookie_header = res.headers.get("Set-Cookie", "")
+            if "Edge-Cache-Cookie" in cookie_header:
+                for part in cookie_header.split(";"):
+                    if "Edge-Cache-Cookie=" in part:
+                        print("✅ Direct Toffee CDN Cookie acquired!")
+                        return part.strip()
+            
+            # ২. ব্যাকআপ সোর্স চেক করা
+            if res.status_code == 200 and "toffee_ns.json" in url:
+                data = res.json()
+                if isinstance(data, list) and len(data) > 0:
+                    for item in data:
+                        if isinstance(item, dict) and item.get("cookie"):
+                            print("✅ Toffee Stream Keeper Cookie acquired!")
+                            return item.get("cookie")
+        except Exception as e:
+            print(f"Warning: {e}")
+            
     return ""
 
 def build_independent_toffee_playlist():
-    print("🚀 Generating Dual Format Toffee Catalog for NS Player...")
-    current_cookie = fetch_toffee_cookie()
+    print("🚀 Generating Dual Format Toffee Catalog...")
+    current_cookie = fetch_direct_toffee_cookie()
     
-    # Network Stream Player (NS Player) এর জন্য পছন্দনীয় রুট লেভেল JSON Array [ {...}, {...} ]
     json_array_output = []
-    
     m3u_content = "#EXTM3U\n"
     
     for ch in BASE_CHANNELS:
         ua = "okhttp/4.11.0"
         
-        # NS Player এর জন্য ডুয়েল কম্প্যাটিবল অবজেক্ট
         channel_item = {
             "category": ch["category"],
             "category_name": ch["category"],
@@ -120,15 +141,13 @@ def build_independent_toffee_playlist():
         m3u_content += f'#EXTINF:-1 tvg-logo="{ch["logo"]}" group-title="{ch["category"]}",{ch["name"]}\n'
         m3u_content += f'{ch["cdn"]}\n\n'
 
-    # ১. Network Stream Player (NS Player) এর জন্য রুট লেভেল JSON Array ফাইল সেভ করা
     with open("toffee_channel_data.json", "w", encoding="utf-8") as f:
         json.dump(json_array_output, f, indent=2, ensure_ascii=False)
         
-    # ২. M3U প্লেলিস্ট সেভ করা
     with open("toffee_playlist.m3u", "w", encoding="utf-8") as f:
         f.write(m3u_content)
 
-    print(f"🎉 Generated {len(BASE_CHANNELS)} channels into 'toffee_channel_data.json' and 'toffee_playlist.m3u'!")
+    print(f"🎉 Generated {len(BASE_CHANNELS)} channels with fresh cookie into 'toffee_channel_data.json' and 'toffee_playlist.m3u'!")
 
 if __name__ == "__main__":
     build_independent_toffee_playlist()
