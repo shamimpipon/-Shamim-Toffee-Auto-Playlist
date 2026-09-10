@@ -3,7 +3,7 @@ import os
 import requests
 from datetime import datetime
 
-# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সকল ৭৫টি চ্যানেল - কোনো থার্ডপার্টি লিংকের ওপর নির্ভরতা নেই)
+# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সকল ৭৫টি চ্যানেল)
 BASE_CHANNELS = [
     {"name": "TOFFEE Sports VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sports_highlights/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/19779/logo/240x240/mobile_logo_975410001725875598.png"},
     {"name": "TOFFEE Movies VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/toffee_movie/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/2708/logo/240x240/mobile_logo_724353001725875591.png"},
@@ -68,7 +68,7 @@ BASE_CHANNELS = [
     {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"}
 ]
 
-# ২. সরাসরি টুফি সিডিএন থেকে ফ্রেশ কুকি সংগ্রহের মেথড (কোনো থার্ডপার্টি লিংকের ওপর নির্ভরতা নেই)
+# ২. সরাসরি টুফি সিডিএন থেকে ফ্রেশ কুকি সংগ্রহের মেথড
 def fetch_direct_toffee_cookie():
     headers = {
         "User-Agent": "okhttp/4.11.0",
@@ -142,4 +142,3 @@ def build_independent_toffee_playlist():
 
 if __name__ == "__main__":
     build_independent_toffee_playlist()
-}}
