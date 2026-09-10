@@ -3,7 +3,7 @@ import os
 import requests
 from datetime import datetime
 
-# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সকল ৭৫টি চ্যানেল - কোনো থার্ডপার্টি লিংকের নির্ভরতা নেই)
+# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সম্পূর্ণ ৭৫টি চ্যানেল - জিরো থার্ডপার্টি ইউআরএল)
 BASE_CHANNELS = [
     {"name": "TOFFEE Sports VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sports_highlights/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/19779/logo/240x240/mobile_logo_975410001725875598.png"},
     {"name": "TOFFEE Movies VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/toffee_movie/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/2708/logo/240x240/mobile_logo_724353001725875591.png"},
@@ -56,7 +56,7 @@ BASE_CHANNELS = [
     {"name": "SONY ENTERTAINMENT TELEVISION", "category": "Entertainment Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sony_entertainment/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/57/logo/240x240/mobile_logo_149299001666780350.png"},
     {"name": "B4U Music VIP", "category": "Entertainment Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/b4u_music/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/367/logo/115x115/mobile_logo_886909001563629905.png"},
     {"name": "SONY SAB HD VIP", "category": "Entertainment Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonysab_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/2420/logo/240x240/mobile_logo_688156001666785674.png"},
-    {"name": "Zee TV HD", "category": "Entertainment Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/zee_tv_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/644/logo/240x240/mobile_logo_649814001655891557.png"},
+    {"name": "Zee TV HD", "category": "Entertainment Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/zee_tv_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/644/logo/240x240/mobile_logo_649814001655891657.png"},
     {"name": "SONY MAX HD VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sony_max_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/641/logo/240x240/mobile_logo_440775001666782769.png"},
     {"name": "Zee Bangla Cinema", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/zee_bangla_cinema/playlist.m3u8", "logo": "https://assets-prod.services.toffeelive.com/w_256,q_75,f_webp/-C7MX5UBv9knK3AHdKOi/posters/b0f0bfe0-f1f3-48b3-83ce-203cd44cafe2.png"},
     {"name": "Zee Bollywood", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/zee_bollywood/playlist.m3u8", "logo": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/OnSlPJYBcqxnFHJB6lFX/posters/4818f95a-c64a-490f-b310-a49aec026d71.png"},
@@ -65,58 +65,59 @@ BASE_CHANNELS = [
     {"name": "SONY PIX HD VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonypix_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/2419/logo/240x240/mobile_logo_287412001666784602.png"},
     {"name": "Zee Cafe", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/zee_cafe_hd/playlist.m3u8", "logo": "https://assets-prod.services.toffeelive.com/f_webp,w_400,q_100/U3QEd5YBcqxnFHJBpYzc/posters/3442d493-0c71-44b9-b12f-8e600d5eab91.png"},
     {"name": "B4U Movies VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/b4u_movies/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/366/logo/240x240/mobile_logo_702115001663003759.png"},
-    {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"}
+    {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"},
+    {"name": "Zee Bangla Cinema VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/zee_bangla_cinema/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/403/logo/240x240/mobile_logo_368845001655891378.png"},
+    {"name": "Zee Cinema HD", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/zee_cinema_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/804/logo/240x240/mobile_logo_370803001655891689.png"},
+    {"name": "TLC HD", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/tlc_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/608/logo/240x240/mobile_logo_648826001673178929.png"},
+    {"name": "TLC", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/tlc_sd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/358/logo/240x240/mobile_logo_048875001673178985.png"},
+    {"name": "Animal Planet", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/animal_planet_sd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/359/logo/240x240/mobile_logo_835681001673175607.png"},
+    {"name": "Animal Planet HD", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/animal_planet_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/18096/logo/240x240/mobile_logo_032001001673194753.png"},
+    {"name": "SONY BBC EARTH HD VIP", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonybbc_earth_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/670/logo/240x240/mobile_logo_892290001738663264.png"},
+    {"name": "Discovery HD", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/discovery_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/18093/logo/240x240/mobile_logo_868363001673181438.png"},
+    {"name": "Discovery", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/discovery_sd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/18097/logo/240x240/mobile_logo_297723001673195119.png"},
+    {"name": "Discovery Science", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/discovery_science/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/378/logo/240x240/mobile_logo_604754001673177502.png"},
+    {"name": "Discovery Turbo", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/discovery_turbo/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/379/logo/240x240/mobile_logo_775127001673177876.png"},
+    {"name": "Investigation Discovery HD", "category": "Infotainment", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/discovary_investigation_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/18094/logo/240x240/mobile_logo_154805001673178308.png"},
+    {"name": "&TV HD", "category": "Entertainment Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/and_tv_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/801/logo/240x240/mobile_logo_975410001725875598.png"},
+    {"name": "& Pictures HD", "category": "Entertainment Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/andpicture_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/4570/logo/240x240/mobile_logo_000080001675856893.png"}
 ]
 
-# ২. সরাসরি টুফি সিডিএন থেকে ফ্রেশ কুকি সংগ্রহের ১০০% স্বাধীন মেথড
+# ২. সরাসরি টুফির অফিশিয়াল সিডিএন সার্ভার থেকে কুকি তোলার ডাইরেক্ট মেথড (নো থার্ডপার্টি)
 def fetch_direct_toffee_cookie():
-    print("🍪 Requesting fresh Edge-Cache-Cookie directly from Toffee CDN...")
+    print("🍪 Fetching direct Toffee CDN Cookie...")
     headers = {
         "User-Agent": "okhttp/4.11.0",
         "Referer": "https://toffeelive.com/",
         "Origin": "https://toffeelive.com",
         "X-Requested-With": "com.banglalink.toffeetv"
     }
-    
-    # অফিশিয়াল ব্যাকএন্ড সার্ভিস
-    test_sources = [
-        "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8",
-    ]
-    
-    for url in test_sources:
-        try:
-            res = requests.get(url, headers=headers, timeout=12)
-            # ১. টুফি সিডিএন এর রেসপন্স হেডার থেকে কুকি রিড করা
-            cookie_header = res.headers.get("Set-Cookie", "")
-            if "Edge-Cache-Cookie" in cookie_header:
-                for part in cookie_header.split(";"):
-                    if "Edge-Cache-Cookie=" in part:
-                        print("✅ Direct Toffee CDN Cookie acquired!")
-                        return part.strip()
-            
-            # ২. ব্যাকআপ সোর্স চেক করা
-            if res.status_code == 200 and "toffee_ns.json" in url:
-                data = res.json()
-                if isinstance(data, list) and len(data) > 0:
-                    for item in data:
-                        if isinstance(item, dict) and item.get("cookie"):
-                            print("✅ Toffee Stream Keeper Cookie acquired!")
-                            return item.get("cookie")
-        except Exception as e:
-            print(f"Warning: {e}")
-            
-    return ""
+    toffee_url = "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8"
+    try:
+        res = requests.get(toffee_url, headers=headers, timeout=12)
+        cookie_header = res.headers.get("Set-Cookie", "")
+        if "Edge-Cache-Cookie" in cookie_header:
+            for part in cookie_header.split(";"):
+                if "Edge-Cache-Cookie=" in part:
+                    return part.strip()
+    except Exception as e:
+        print(f"Warning: {e}")
+        
+    # একটিভ টুফি প্রড-লিনিয়ার সিকিউরিটি সিগনেচার কুকি
+    return "Edge-Cache-Cookie=URLPrefix=aHR0cHM6Ly9ibGRjbXByb2QtY2RuLnRvZmZlZWxpdmUuY29t:Expires=1789238820:KeyName=prod_linear:Signature=-D8YBH9EIoHEhsvDJS_RMDkKj-kyi1hTcRj9wwt6Rmfz1mNn117Vb5bcDel7bNwvgmCJTopUGvypQxvEao_BDw"
 
 def build_independent_toffee_playlist():
-    print("🚀 Generating Dual Format Toffee Catalog...")
+    print("🚀 Generating Dual Format Toffee Catalog for 75 Channels...")
     current_cookie = fetch_direct_toffee_cookie()
     
+    # Network Stream Player (NS Player) এর জন্য পছন্দনীয় রুট লেভেল JSON Array [ {...}, {...} ]
     json_array_output = []
+    
     m3u_content = "#EXTM3U\n"
     
     for ch in BASE_CHANNELS:
         ua = "okhttp/4.11.0"
         
+        # NS Player ও অ্যান্ড্রেয়েড অ্যাপের জন্য ডুয়েল কম্প্যাটিবল অবজেক্ট
         channel_item = {
             "category": ch["category"],
             "category_name": ch["category"],
@@ -141,13 +142,15 @@ def build_independent_toffee_playlist():
         m3u_content += f'#EXTINF:-1 tvg-logo="{ch["logo"]}" group-title="{ch["category"]}",{ch["name"]}\n'
         m3u_content += f'{ch["cdn"]}\n\n'
 
+    # ১. Network Stream Player (NS Player) এর জন্য রুট লেভেল JSON Array ফাইল সেভ করা
     with open("toffee_channel_data.json", "w", encoding="utf-8") as f:
         json.dump(json_array_output, f, indent=2, ensure_ascii=False)
         
+    # ২. M3U প্লেলিস্ট সেভ করা
     with open("toffee_playlist.m3u", "w", encoding="utf-8") as f:
         f.write(m3u_content)
 
-    print(f"🎉 Generated {len(BASE_CHANNELS)} channels with fresh cookie into 'toffee_channel_data.json' and 'toffee_playlist.m3u'!")
+    print(f"🎉 Successfully generated ALL {len(BASE_CHANNELS)} channels into 'toffee_channel_data.json' and 'toffee_playlist.m3u'!")
 
 if __name__ == "__main__":
     build_independent_toffee_playlist()
