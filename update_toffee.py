@@ -68,54 +68,50 @@ BASE_CHANNELS = [
     {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"}
 ]
 
-# ২. ডাইনামিক কুকি জেনারেটর (সরাসরি টুফি সিডিএন থেকে)
+# ২. ডাইনামিক ফিল্টারিং ও কুকি প্রসেসিং মেথড
 def fetch_toffee_cookie():
-    print("🍪 Fetching fresh Toffee Edge-Cache-Cookie...")
-    COOKIE_SOURCES = [
-        "https://toffee-stream-keeper.lovable.app/toffee_ns.json"
-    ]
-    for src in COOKIE_SOURCES:
-        try:
-            res = requests.get(src, timeout=15)
-            if res.status_code == 200:
-                data = res.json()
-                if isinstance(data, list):
-                    for item in data:
-                        if isinstance(item, dict) and item.get("cookie") and "Edge-Cache-Cookie" in item.get("cookie"):
-                            print("✅ Fresh Toffee Cookie acquired successfully!")
-                            return item.get("cookie")
-        except Exception as e:
-            print(f"Warning fetching cookie: {e}")
+    COOKIE_SOURCE = "https://toffee-stream-keeper.lovable.app/toffee_ns.json"
+    try:
+        res = requests.get(COOKIE_SOURCE, timeout=15)
+        if res.status_code == 200:
+            data = res.json()
+            if isinstance(data, list):
+                for item in data:
+                    if isinstance(item, dict) and item.get("cookie") and "Edge-Cache-Cookie" in item.get("cookie"):
+                        return item.get("cookie")
+    except Exception as e:
+        print(f"Warning fetching cookie: {e}")
     return ""
 
 def build_independent_toffee_playlist():
-    print("🚀 Generating 100% Self-Hosted Independent Toffee Catalog...")
+    print("🚀 Generating Dual Format Toffee Catalog for NS Player...")
     current_cookie = fetch_toffee_cookie()
-
-    output_data = {
-        "name": "Shamim Live TV - Self Hosted Toffee Playlist",
-        "owner": "Shamim Pipon",
-        "channels_amount": len(BASE_CHANNELS),
-        "updated_on": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "channels": []
-    }
-
+    
+    # Network Stream Player (NS Player) এর জন্য পছন্দনীয় রুট লেভেল JSON Array [ {...}, {...} ]
+    json_array_output = []
+    
     m3u_content = "#EXTM3U\n"
-
+    
     for ch in BASE_CHANNELS:
         ua = "okhttp/4.11.0"
-        channel_obj = {
+        
+        # NS Player এর জন্য ডুয়েল কম্প্যাটিবল অবজেক্ট
+        channel_item = {
+            "category": ch["category"],
+            "category_name": ch["category"],
             "name": ch["name"],
             "link": ch["cdn"],
+            "url": ch["cdn"],
             "logo": ch["logo"],
-            "category_name": ch["category"],
+            "cookie": current_cookie,
+            "user_agent": ua,
             "headers": {
                 "cookie": current_cookie,
                 "user-agent": ua,
                 "referer": "https://toffeelive.com/"
             }
         }
-        output_data["channels"].append(channel_obj)
+        json_array_output.append(channel_item)
 
         m3u_content += f'#EXTVLCOPT:http-user-agent={ua}\n'
         if current_cookie:
@@ -124,9 +120,11 @@ def build_independent_toffee_playlist():
         m3u_content += f'#EXTINF:-1 tvg-logo="{ch["logo"]}" group-title="{ch["category"]}",{ch["name"]}\n'
         m3u_content += f'{ch["cdn"]}\n\n'
 
+    # ১. Network Stream Player (NS Player) এর জন্য রুট লেভেল JSON Array ফাইল সেভ করা
     with open("toffee_channel_data.json", "w", encoding="utf-8") as f:
-        json.dump(output_data, f, indent=2, ensure_ascii=False)
-
+        json.dump(json_array_output, f, indent=2, ensure_ascii=False)
+        
+    # ২. M3U প্লেলিস্ট সেভ করা
     with open("toffee_playlist.m3u", "w", encoding="utf-8") as f:
         f.write(m3u_content)
 
