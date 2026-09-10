@@ -11,9 +11,6 @@ permissions:
 jobs:
   build-and-update:
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node20
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
     steps:
       - name: Checkout Code
@@ -41,4 +38,6 @@ jobs:
         run: |
           git config --global user.name "ShamimToffeeBot"
           git config --global user.email "bot@shamim.com"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git add toffee_channel_data.json toffee_playlist.m3u
+          git diff --staged --quiet || (git commit -m "🔁 Auto update Toffee playlist" && git push origin HEAD:main)
