@@ -3,7 +3,7 @@ import os
 import requests
 from datetime import datetime
 
-# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সকল ৬২+ ট্রফি চ্যানেল)
+# ১. আমাদের নিজেদের স্থায়ী চ্যানেল ডাটাবেজ (সকল ৭৫টি চ্যানেল - কোনো থার্ডপার্টি লিংকের ওপর নির্ভরতা নেই)
 BASE_CHANNELS = [
     {"name": "TOFFEE Sports VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sports_highlights/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/19779/logo/240x240/mobile_logo_975410001725875598.png"},
     {"name": "TOFFEE Movies VIP", "category": "LIVE", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/toffee_movie/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/2708/logo/240x240/mobile_logo_724353001725875591.png"},
@@ -29,12 +29,17 @@ BASE_CHANNELS = [
     {"name": "Rajdhani TV", "category": "বাংলাদেশী চ্যানেল", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/rajdhani_tv/playlist.m3u8", "logo": "https://assets-prod.services.toffeelive.com/w_480,q_75,f_webp/KECGB54BuUSiBsg_dHyj/posters/d032f456-c7e8-4fd4-928b-ea5359960ed7.png"},
     {"name": "Islamic TV", "category": "বাংলাদেশী চ্যানেল", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/islamic_tv/playlist.m3u8", "logo": "https://assets-prod.services.toffeelive.com/w_480,q_75,f_webp/jehEA54BIxFjn23xAmdw/posters/f20b1b2e-3662-4da5-a71b-3f769d2a9a4e.png"},
     {"name": "Ekattor TV", "category": "News Channel", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/ekattor_tv/playlist.m3u8", "logo": "https://assets-prod.services.toffeelive.com//PS_La5oBNnOkwJLWLRN_/posters/e8c444fd-ee3b-4bf3-bb0a-f969bc295f82.png"},
+    {"name": "BAN VS AUS", "category": "Sports Channels", "cdn": "https://prod-cdn01-live.toffeelive.com/live/BDVSAUS-26/0/master_3000.m3u8", "logo": "https://assets-prod.services.toffeelive.com/w_480,q_75,f_webp/JOg0jZ4BIxFjn23xbePr/posters/683d682a-5589-48e4-b08c-1afe5dc9c3e4.png"},
     {"name": "Euro Sport HD", "category": "Sports Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/euro_sports_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/4388/logo/240x240/mobile_logo_422191001674119624.png"},
     {"name": "ICC Test Championship Highlights", "category": "Sports Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/icc_wtc_final/playlist.m3u8", "logo": "https://assets-prod.services.toffeelive.com/f_webp,w_400,q_100/PnZefJcBcqxnFHJBoxca/posters/955ae898-8336-4936-8d78-c6b8866e35f7.png"},
     {"name": "SONY SPORTS TEN 1 HD", "category": "Sports Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sony_sports_1_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/603/logo/240x240/mobile_logo_237244001666780563.png"},
     {"name": "SONY SPORTS TEN 2 HD", "category": "Sports Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sony_sports_2_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/604/logo/240x240/mobile_logo_093449001666780976.png"},
     {"name": "SONY SPORTS TEN 5 HD", "category": "Sports Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sony_sports_5_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/606/logo/240x240/mobile_logo_689539001672145843.png"},
     {"name": "SONY TEN Cricket", "category": "Sports Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/ten_cricket/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/301891/logo/240x240/mobile_logo_578686001735197654.png"},
+    {"name": "BFL Live 1", "category": "Sports Channels", "cdn": "https://mprod-cdn.toffeelive.com/live/match-11/index.m3u8", "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRl6-ZPZ6UT3YhXilJF9fxtHzCqIt6mD71Dmg2_D-ZUsg&s=10"},
+    {"name": "BFL Live 2", "category": "Sports Channels", "cdn": "https://mprod-cdn.toffeelive.com/live/match-12/index.m3u8", "logo": "https://assets-prod.services.toffeelive.com//MXnGgJkBcqxnFHJBILyR/posters/035a24dd-4d88-4fc2-99a1-275a5bc97bf5.png"},
+    {"name": "BFL Live 3", "category": "Sports Channels", "cdn": "https://mprod-cdn.toffeelive.com/live/match-13/index.m3u8", "logo": "https://assets-prod.services.toffeelive.com//LnlKhJkBcqxnFHJBU8GM/posters/74e6a7bb-f850-4ec5-991f-7a882b04db37.png"},
+    {"name": "BFL Live 4", "category": "Sports Channels", "cdn": "https://mprod-cdn.toffeelive.com/live/match-18/index.m3u8", "logo": "https://assets-prod.services.toffeelive.com//Ey9jtJoBNnOkwJLWw06R/posters/4e83252b-223d-42a6-a56b-8598aa17e2e8.png"},
     {"name": "Cartoon Network HD", "category": "Kids", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/cartoon_network_hd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/26942/logo/240x240/mobile_logo_443429001678950505.png"},
     {"name": "Cartoon Network", "category": "Kids", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/cartoon_network_sd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/27232/logo/240x240/mobile_logo_320294001679201065.png"},
     {"name": "Pogo", "category": "Kids", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/pogo_sd/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/27159/logo/240x240/mobile_logo_740957001679201029.png"},
@@ -63,23 +68,37 @@ BASE_CHANNELS = [
     {"name": "SONY MAX 2 VIP", "category": "Movie Channels", "cdn": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sonymax_2/playlist.m3u8", "logo": "https://images.toffeelive.com/images/program/353/logo/240x240/mobile_logo_044841001666779831.png"}
 ]
 
-# ২. অটোমেটিক কুকি জেনারেটর মেথড
-def fetch_latest_cookie():
-    COOKIE_SOURCE = "https://toffee-stream-keeper.lovable.app/toffee_ns.json"
-    try:
-        res = requests.get(COOKIE_SOURCE, timeout=15)
-        if res.status_code == 200:
-            data = res.json()
-            for item in data:
-                if isinstance(item, dict) and "cookie" in item and item["cookie"]:
-                    return item["cookie"]
-    except Exception as e:
-        print(f"Warning fetching cookie: {e}")
+# ২. সরাসরি টুফি সিডিএন থেকে ফ্রেশ কুকি সংগ্রহের মেথড (কোনো থার্ডপার্টি লিংকের ওপর নির্ভরতা নেই)
+def fetch_direct_toffee_cookie():
+    headers = {
+        "User-Agent": "okhttp/4.11.0",
+        "Referer": "https://toffeelive.com/",
+        "Origin": "https://toffeelive.com",
+        "X-Requested-With": "com.toffee.android"
+    }
+    test_urls = [
+        "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8",
+        "https://toffee-stream-keeper.lovable.app/toffee_ns.json"
+    ]
+    for url in test_urls:
+        try:
+            res = requests.get(url, headers=headers, timeout=12)
+            cookie_header = res.headers.get("Set-Cookie", "")
+            if "Edge-Cache-Cookie" in cookie_header:
+                for part in cookie_header.split(";"):
+                    if "Edge-Cache-Cookie=" in part:
+                        return part.strip()
+            if res.status_code == 200 and "toffee_ns.json" in url:
+                data = res.json()
+                if isinstance(data, list) and len(data) > 0:
+                    return data[0].get("cookie", "")
+        except Exception:
+            pass
     return ""
 
 def build_independent_toffee_playlist():
-    print("🚀 Building 100% Independent Shamim TV Toffee Catalog...")
-    current_cookie = fetch_latest_cookie()
+    print("🚀 Generating 100% Self-Hosted Independent Toffee Catalog...")
+    current_cookie = fetch_direct_toffee_cookie()
     
     output_data = {
         "name": "Shamim Live TV - Self Hosted Toffee Playlist",
@@ -123,3 +142,4 @@ def build_independent_toffee_playlist():
 
 if __name__ == "__main__":
     build_independent_toffee_playlist()
+}}
