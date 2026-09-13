@@ -2,7 +2,7 @@ name: Auto Update Toffee Streams
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/30 * * * *' # প্রতি ৩০ মিনিটে আপডেট হবে
   workflow_dispatch:
 
 permissions:
@@ -11,33 +11,27 @@ permissions:
 jobs:
   build-and-update:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Python
+        
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.10"
 
       - name: Install Dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run Scraper Script
-        run: |
-          python update_toffee.py
+      - name: Run Toffee Scraper
+        run: python update_toffee.py
 
-      - name: Commit and Push Updated Files
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and Push Changes
         run: |
-          git config --global user.name "ShamimToffeeBot"
-          git config --global user.email "bot@shamim.com"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add toffee_channel_data.json toffee_playlist.m3u
-          git diff --staged --quiet || (git commit -m "🔁 Auto update Toffee playlist" && git push origin HEAD:main)
+          # যদি কোনো পরিবর্তন থাকে তবেই কমিট করবে
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto Update Toffee Playlist: Fresh Cookies Added" && git push)
