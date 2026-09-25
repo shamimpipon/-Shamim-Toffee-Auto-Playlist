@@ -1,28 +1,45 @@
 import urllib.request
+import urllib.error
 import re
 import json
 
-PROBE_URL = "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8"
-headers = {
-    "User-Agent": "okhttp/4.11.0",
-    "Referer": "https://toffeelive.com/",
-    "Origin": "https://toffeelive.com",
-    "X-Requested-With": "com.toffee.android"
-}
-
 def get_fresh_cookie():
-    try:
-        req = urllib.request.Request(PROBE_URL, headers=headers)
-        with urllib.request.urlopen(req, timeout=10) as response:
-            set_cookie = response.headers.get("Set-Cookie", "")
+    urls_to_try = [
+        "https://toffeelive.com/",
+        "https://toffeelive.com/live",
+        "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8"
+    ]
+    
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": "https://toffeelive.com/",
+        "Origin": "https://toffeelive.com",
+        "X-Requested-With": "com.toffee.android"
+    }
+
+    for probe_url in urls_to_try:
+        try:
+            req = urllib.request.Request(probe_url, headers=headers)
+            with urllib.request.urlopen(req, timeout=10) as response:
+                set_cookie = response.headers.get("Set-Cookie", "")
+                match = re.search(r"Edge-Cache-Cookie=[^;]+", set_cookie)
+                if match:
+                    print(f"Fetched cookie from {probe_url}")
+                    return match.group(0)
+        except urllib.error.HTTPError as e:
+            # ৪০৩ বা রিডাইরেক্ট হেডার্স থেকেও কুকি রিড করা হবে
+            set_cookie = e.headers.get("Set-Cookie", "") if e.headers else ""
             match = re.search(r"Edge-Cache-Cookie=[^;]+", set_cookie)
             if match:
+                print(f"Fetched cookie from error headers of {probe_url}")
                 return match.group(0)
-    except Exception as e:
-        print(f"Error fetching live cookie: {e}")
-    return "" # কোনো ব্যাকআপ ছাড়া সরাসরি খালি স্ট্রিং
+        except Exception as e:
+            print(f"Error probing {probe_url}: {e}")
+
+    return ""
 
 fresh_cookie = get_fresh_cookie()
+print(f"Active Live Cookie: {fresh_cookie}")
 
 channels = [
     {
@@ -49,3 +66,5 @@ channels = [
 
 with open("toffee_NS_Player.m3u", "w", encoding="utf-8") as f:
     json.dump(channels, f, indent=2, ensure_ascii=False)
+
+print("Playlist generated successfully!")
