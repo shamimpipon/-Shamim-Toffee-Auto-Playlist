@@ -4,15 +4,19 @@
     "name": "TOFFEE Sports VIP",
     "link": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sports_highlights/playlist.m3u8",
     "logo": "https://images.toffeelive.com/images/program/19779/logo/240x240/mobile_logo_975410001725875598.png",
-    "cookie": "Edge-Cache-Cookie=URLPrefix=aHR0cHM6Ly9ibGRjbXByb2QtY2RuLnRvZmZlZWxpdmUuY29t:Expires=1790359764:KeyName=prod_linear:Signature=mkmovmmcCY3Y4jBChrxmKLZ2Jt7IALGL0B6jHK59ysE4dQKKqyUqLnbwbcWKwSdG7NJhBqsOdzHAFQukfiQDA",
-    "user_agent": "okhttp/4.11.0"
+    "cookie": "",
+    "user_agent": "okhttp/4.11.0",
+    "referer": "https://toffeelive.com/",
+    "origin": "https://toffeelive.com"
   },
   {
     "category": "News Channel",
     "name": "Somoy TV",
     "link": "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8",
     "logo": "https://images.toffeelive.com/images/program/340/logo/240x240/mobile_logo_094417001655891123.png",
-    "cookie": "Edge-Cache-Cookie=URLPrefix=aHR0cHM6Ly9ibGRjbXByb2QtY2RuLnRvZmZlZWxpdmUuY29t:Expires=1790359764:KeyName=prod_linear:Signature=mkmovmmcCY3Y4jBChrxmKLZ2Jt7IALGL0B6jHK59ysE4dQKKqyUqLnbwbcWKwSdG7NJhBqsOdzHAFQukfiQDA",
-    "user_agent": "okhttp/4.11.0"
+    "cookie": "",
+    "user_agent": "okhttp/4.11.0",
+    "referer": "https://toffeelive.com/",
+    "origin": "https://toffeelive.com"
   }
 ]
