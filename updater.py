@@ -20,7 +20,7 @@ def get_fresh_cookie():
                 return match.group(0)
     except Exception as e:
         print(f"Error fetching live cookie: {e}")
-    return "Edge-Cache-Cookie=URLPrefix=aHR0cHM6Ly9ibGRjbXByb2QtY2RuLnRvZmZlZWxpdmUuY29t:Expires=1790359764:KeyName=prod_linear:Signature=mkmovmmcCY3Y4jBChrxmKLZ2Jt7IALGL0B6jHK59ysE4dQKKqyUqLnbwbcWKwSdG7NJhBqsOdzHAFQukfiQDA"
+    return "" # কোনো ব্যাকআপ ছাড়া সরাসরি খালি স্ট্রিং
 
 fresh_cookie = get_fresh_cookie()
 
