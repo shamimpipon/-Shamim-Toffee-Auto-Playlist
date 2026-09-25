@@ -31,7 +31,9 @@ channels = [
         "link": "https://bldcmprod-cdn.toffeelive.com/cdn/live/sports_highlights/playlist.m3u8",
         "logo": "https://images.toffeelive.com/images/program/19779/logo/240x240/mobile_logo_975410001725875598.png",
         "cookie": fresh_cookie,
-        "user_agent": "okhttp/4.11.0"
+        "user_agent": "okhttp/4.11.0",
+        "referer": "https://toffeelive.com/",
+        "origin": "https://toffeelive.com"
     },
     {
         "category": "News Channel",
@@ -39,7 +41,9 @@ channels = [
         "link": "https://bldcmprod-cdn.toffeelive.com/cdn/live/somoy_tv/playlist.m3u8",
         "logo": "https://images.toffeelive.com/images/program/340/logo/240x240/mobile_logo_094417001655891123.png",
         "cookie": fresh_cookie,
-        "user_agent": "okhttp/4.11.0"
+        "user_agent": "okhttp/4.11.0",
+        "referer": "https://toffeelive.com/",
+        "origin": "https://toffeelive.com"
     }
 ]
 
